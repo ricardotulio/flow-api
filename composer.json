@@ -19,7 +19,7 @@
             "database/factories"
         ],
         "psr-4": {
-            "App\\": "app/"
+            "App\\": "src/Application/Lumen/app/"
         }
     },
     "autoload-dev": {
