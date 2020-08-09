@@ -1,10 +1,10 @@
 <?php
 
-namespace Flow\Domain\Entity\Ticket;
+namespace Flow\Domain\Entity\Card;
 
 use DateTime;
 
-interface TicketInterface
+interface CardInterface
 {
     public function getId(): string;
 
