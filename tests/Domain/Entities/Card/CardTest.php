@@ -4,9 +4,9 @@ namespace Flow\Domain\Entities\Card;
 
 use TestCase;
 use DateTime;
-use Flow\Domain\Entities\Status\StatusInterface;
-use Flow\Domain\Entities\StatusHistory\StatusHistoryInterface;
-use Flow\Domain\Entities\StatusTransition\StatusTransitionInterface;
+use Flow\Domain\Entities\Status\Status;
+use Flow\Domain\Entities\StatusTransition\StatusTransition;
+use Flow\Domain\Entities\StatusHistory\StatusHistory;
 
 class CardTest extends TestCase
 {
@@ -15,28 +15,72 @@ class CardTest extends TestCase
      */
     public function mustReturnTheFirstTimeInStatus()
     {
-        $status = $this->createMock(StatusInterface::class);
-        $statusTransition = $this->createMock(StatusTransitionInterface::class);
-        $statusHistory = $this->createMock(StatusHistoryInterface::class);
+        $statusInProgress = new Status('in_progress');
+        $statusDone = new Status('done');
 
-        $statusTransition->expects($this->any())
-            ->method('getTransitionDate')
-            ->willReturn(DateTime::createFromFormat('j-M-Y', '10-Sep-2020'));
+        $firstTransition = new StatusTransition(
+            $statusInProgress,
+            $statusDone,
+            DateTime::createFromFormat('j-M-Y', '10-Sep-2020')
+        );
 
-        $statusHistory->expects($this->any())
-                      ->method('getFirstTransitionToStatus')
-                      ->willReturn($statusTransition);
+        $secondTransition = new StatusTransition(
+            $statusInProgress,
+            $statusDone,
+            DateTime::createFromFormat('j-M-Y', '15-Sep-2020')
+        );
+
+        $statusHistory = new StatusHistory();
+        $statusHistory->addTransition($firstTransition)
+            ->addTransition($secondTransition); 
 
         $card = new Card(
             'm5a1',
             $statusHistory
         );
 
-        $firstTimeInStatus = $card->getFirstTimeInStatus($status);
+        $firstTimeInStatus = $card->getFirstTimeInStatus($statusDone);
 
         $this->assertEquals(
             DateTime::createFromFormat('j-M-Y', '10-Sep-2020'),
             $firstTimeInStatus
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function mustReturnTheLastTimeInStatus()
+    {
+        $statusInProgress = new Status('in_progress');
+        $statusDone = new Status('done');
+
+        $firstTransition = new StatusTransition(
+            $statusInProgress,
+            $statusDone,
+            DateTime::createFromFormat('j-M-Y', '10-Sep-2020')
+        );
+
+        $secondTransition = new StatusTransition(
+            $statusInProgress,
+            $statusDone,
+            DateTime::createFromFormat('j-M-Y', '15-Sep-2020')
+        );
+
+        $statusHistory = new StatusHistory();
+        $statusHistory->addTransition($firstTransition)
+            ->addTransition($secondTransition); 
+
+        $card = new Card(
+            'm5a1',
+            $statusHistory
+        );
+
+        $lastTimeInStatus = $card->getLastTimeInStatus($statusDone);
+
+        $this->assertEquals(
+            DateTime::createFromFormat('j-M-Y', '15-Sep-2020'),
+            $lastTimeInStatus
         );
     }
 }
