@@ -7,5 +7,9 @@ use Flow\Domain\Entities\Status\StatusInterface;
 
 interface LeadTimeCalculatorServiceInterface
 {
-
+    public function calculate(
+        StatusInterface $commitmentPoint,
+        StatusInterface $deliveryPoint,
+        CardInterface $card
+    ): int;
 }

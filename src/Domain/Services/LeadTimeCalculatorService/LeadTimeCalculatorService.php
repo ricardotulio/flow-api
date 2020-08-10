@@ -7,8 +7,16 @@ use Flow\Domain\Entities\Status\StatusInterface;
 
 class LeadTimeCalculatorService
 {
-    public function calculate(CardInterface $card): int
-    {
-        return 20;
+    public function calculate(
+        StatusInterface $commitmentPoint,
+        StatusInterface $deliveryPoint,
+        CardInterface $card
+    ): int {
+        $commitedAt = $card->getFirstTimeInStatus($commitmentPoint);
+        $deliveredAt = $card->getLastTimeInStatus($deliveryPoint);
+
+        $leadtime = (int) $commitedAt->diff($deliveredAt)->days;
+
+        return $leadtime;
     }
 }
