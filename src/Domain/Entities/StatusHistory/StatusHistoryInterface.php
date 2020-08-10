@@ -10,4 +10,8 @@ interface StatusHistoryInterface
     public function getFirstTransitionToStatus(
         StatusInterface $status
     ): StatusTransitionInterface;
+
+    public function getLastTransitionToStatus(
+        StatusInterface $status
+    ): StatusTransitionInterface;
 }
