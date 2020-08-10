@@ -3,6 +3,7 @@
 namespace Flow\Domain\Entities\Card;
 
 use DateTime;
+use Flow\Domain\Entities\Status\StatusInterface;
 
 interface CardInterface
 {
@@ -15,4 +16,8 @@ interface CardInterface
     public function createdAt(): DateTime;
 
     public function udpatedAt(): DateTime;
+
+    public function getFirstTimeInStatus(StatusInterface $status): DateTime;
+
+    public function getLastTimeInStatus(StatusInterface $status): DateTime;
 }
