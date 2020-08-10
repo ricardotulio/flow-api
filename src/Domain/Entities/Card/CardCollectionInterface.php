@@ -1,6 +1,6 @@
 <?php
 
-namespace Flow\Domain\Entity\Card;
+namespace Flow\Domain\Entities\Card;
 
 interface CardCollectionInterface extends \Countable, \Iterator, \ArrayAccess
 {}
