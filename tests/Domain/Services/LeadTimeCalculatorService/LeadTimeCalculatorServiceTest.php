@@ -4,40 +4,49 @@ namespace Flow\Domain\Services\LeadTimeCalculatorService;
 
 use TestCase;
 use DateTime;
+use Flow\Domain\Entities\Status\Status;
 use Flow\Domain\Entities\Card\CardInterface;
-use Flow\Domain\Entities\Status\StatusInterface;
 
 class LeadTimeCalculatorServiceTest extends TestCase
 {
+    private $prophet;
+
     /**
      * @test
      */
     public function mustCalculateTheCardLeadTime()
     {
-        $commitmentPointStatus = $this->createMock(StatusInterface::class);
-        $doneStatus = $this->createMock(StatusInterface::class);
+        $commitmentPoint = new Status('sprint_backlog');
+        $deliveryPoint = new Status('released');
 
-        $calculatorService = new LeadTimeCalculatorService(
-            $commitmentPointStatus,
-            $doneStatus
+        $card = $this->prophet->prophesize(CardInterface::class);
+        
+        $card->getFirstTimeInStatus($commitmentPoint)
+            ->willReturn(DateTime::createFromFormat('j-M-Y', '1-Feb-2020'));
+
+        $card->getLastTimeInStatus($deliveryPoint)
+             ->willReturn(DateTime::createFromFormat('j-M-Y', '21-Feb-2020'));
+
+        $card = $card->reveal();
+
+        $calculatorService = new LeadTimeCalculatorService();
+
+        $leadtime = $calculatorService->calculate(
+            $commitmentPoint,
+            $deliveryPoint,
+            $card
         );
 
-        $card = $this->createMock(CardInterface::class);
-
-        $firstTimeInStatus = DateTime::createFromFormat('j-M-Y', '1-Feb-2020');
-
-        $card->expects($this->any())
-            ->method('getFirstTimeInStatus')
-            ->willReturn($firstTimeInStatus);
-
-        $lastTimeInStatus = DateTime::createFromFormat('j-M-Y', '20-Feb-2020');
-
-        $card->expects($this->any())
-            ->method('getLastTimeInStatus')
-            ->willReturn($lastTimeInStatus);
-
-        $leadtime = $calculatorService->calculate($card);
-
         $this->assertEquals(20, $leadtime);
+    }
+
+    protected function setUp(): void
+    {
+        $this->prophet = new \Prophecy\Prophet;
+    }
+
+    protected function tearDown(): void
+    {
+        $this->prophet->checkPredictions();
     }
 }
