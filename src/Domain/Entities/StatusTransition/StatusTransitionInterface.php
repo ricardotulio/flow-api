@@ -7,9 +7,9 @@ use Flow\Domain\Entities\Status\StatusInterface;
 
 interface StatusTransitionInterface
 {
-    public function getStatusFrom(): StatusInterface;
+    public function getTransitionFrom(): StatusInterface;
 
-    public function getStatusTo(): StatusInterface;
+    public function getTransitionTo(): StatusInterface;
 
     public function getTransitionDate(): DateTime;
 }
