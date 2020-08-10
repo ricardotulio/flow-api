@@ -15,7 +15,7 @@ interface CardInterface
 
     public function createdAt(): DateTime;
 
-    public function udpatedAt(): DateTime;
+    public function updatedAt(): DateTime;
 
     public function getFirstTimeInStatus(StatusInterface $status): DateTime;
 
